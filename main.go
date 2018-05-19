@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"encoding/json"
 	"io"
+	"github.com/davecgh/go-spew/spew"
 )
 
 // blockChain structure
@@ -129,6 +130,37 @@ func handleGetBlockChain(w http.ResponseWriter, r * http.Request)  {
 // value function
 type Value struct {
 	Value int
+}
+
+// POST handler
+func handleWriteBlock(w http.ResponseWriter, r * http.Request) {
+	// value for blockchain
+	var m Value
+
+	// check for 400
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&m); err != nil {
+		respondWithJSON(w, r, http.StatusBadRequest, r.Body)
+		return
+	}
+
+	defer r.Body.Close()
+
+	// check for 500
+	newBlock, err := generateBlock(Blockchain[len(Blockchain) - 1], m.Value)
+	if err != nil {
+		respondWithJSON(w, r, http.StatusInternalServerError, m)
+		return
+	}
+
+	// check validation of the block
+	if isBlockValid(newBlock, Blockchain[len(Blockchain) - 1]) {
+		newBlockChain := append(Blockchain, newBlock)
+		replaceChain(newBlockChain)
+		spew.Dump(Blockchain)
+	}
+
+	respondWithJSON(w, r, http.StatusCreated, newBlock)
 }
 
 
