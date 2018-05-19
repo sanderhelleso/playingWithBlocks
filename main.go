@@ -1,4 +1,4 @@
-package playingWithBlocks
+package main
 
 import (
 	"crypto/sha256"
