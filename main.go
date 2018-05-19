@@ -157,11 +157,28 @@ func handleWriteBlock(w http.ResponseWriter, r * http.Request) {
 	if isBlockValid(newBlock, Blockchain[len(Blockchain) - 1]) {
 		newBlockChain := append(Blockchain, newBlock)
 		replaceChain(newBlockChain)
+		//pretty prints our structs into the console
 		spew.Dump(Blockchain)
 	}
 
+	// send the chain in JSON format
 	respondWithJSON(w, r, http.StatusCreated, newBlock)
 }
+
+// create chain as JSON and respond to request
+func respondWithJSON(w http.ResponseWriter, r * http.Request, code int, payload interface{}) {
+	response, err := json.MarshalIndent(payload, "", " ")
+	// check for error
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("HTTP 500: Internal Server Error"))
+		return
+	}
+	// write header and response
+	w.WriteHeader(code)
+	w.Write(response)
+}
+
 
 
 
