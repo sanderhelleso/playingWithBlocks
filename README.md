@@ -1,5 +1,5 @@
 # playingWithBlocks
-Simple application that creates a blockchain and allow us to append to it via POST requests
+Simple application that create a blockchain and allow us to append to it via POST requests
 <br>
 <br>
 <br>
