@@ -42,4 +42,29 @@ func generateBlock(oldBlock Block, Value int) (Block, error) {
 	return newBlock, nil
 }
 
+// do block validation
+func isBlockValid(newBlock, oldBlock Block) bool {
+	// check incrementing
+	if oldBlock.Index + 1 != newBlock.Index {
+		return false
+	}
 
+	// check previous hash
+	if oldBlock.Hash != newBlock.PrevHash {
+		return false
+	}
+
+	// check current hash
+	if calculateHash(newBlock) != newBlock.Hash {
+		return false
+	}
+
+	return true
+}
+
+// replace the current chain
+func replaceChain(newBlock []Block) {
+	if len(newBlock) > len(Blockchain) {
+		Blockchain = newBlock
+	}
+}
