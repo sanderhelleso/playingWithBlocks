@@ -7,11 +7,12 @@ import (
 	"os"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/mux"
 	"encoding/json"
 	"io"
+
+	"github.com/gorilla/mux"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/joho/godotenv"
 )
 
 // blockChain structure
@@ -179,7 +180,24 @@ func respondWithJSON(w http.ResponseWriter, r * http.Request, code int, payload 
 	w.Write(response)
 }
 
+// main
+func main() {
+	// allow us to read from .env
+	err := godotenv.Load()
+	// check for error
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	// init chain
+	go func() {
+		time := time2.Now()
+		genesisBlock := Block{0, time.String(), 0, "", ""}
+		spew.Dump(genesisBlock)
+		Blockchain = append(Blockchain, genesisBlock)
+	}()
+	log.Fatal(run())
+}
 
 
 
